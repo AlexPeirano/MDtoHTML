@@ -1,3 +1,4 @@
+from extract_md import *
 from enum import Enum
 from htmlnode import *
 class TextType(Enum):
@@ -42,7 +43,7 @@ def text_node_to_html_node(text_node: TextNode)->LeafNode:
 
 
 def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type:TextType)-> list[TextNode]:
-    liste = []
+    Liste = []
     for node in old_nodes:
         if node.text_type is not TextType.TEXT:
             liste.append(node)
@@ -60,9 +61,54 @@ def split_nodes_delimiter(old_nodes: list[TextNode], delimiter: str, text_type:T
                     else:
                         textnode = TextNode(split_node[i], text_type=text_type)
                         liste.append(textnode)
-    return liste
+    return Liste
                 
                     
-                    
+def split_nodes_image(old_nodes: list[TextNode])->list[TextNode]:
+    Liste = []
+    for node in old_nodes:
+        extracted = extract_markdown_images(node.text)
+        if len(extracted) == 1:
+            Liste.append(node.text)
+        else:
+            i = 0
+            for i in range(len(extracted)):
+                split1 = node.text.split(f"![{extracted[i][0]}]({extracted[i][1]})", maxsplit=1)
+                if len(split1) == 1:
+                    continue
+                else:
+                    Liste.append(TextNode(split1[0], TextType.TEXT))
+                    split1.pop(0)
+                    split1 = ''.join(split1)
+                    Liste.append(TextNode(extracted[i][0], TextType.IMAGES, url=extracted[i][1]))
+    return Liste
 
+
+
+       
+
+
+
+def split_nodes_links(old_nodes: list[TextNode])->list[TextNode]:
+    Liste = []
+    for node in old_nodes:
+        extracted = extract_markdown_links(node.text)
+        if len(extracted) == 1:
+            Liste.append(node.text)
+        else:
+            i = 0
+            for i in range(len(extracted)):
+                split1 = node.text.split(f"![{extracted[i][0]}]({extracted[i][1]})", maxsplit=1)
+                if len(split1) == 1:
+                    continue
+                else:
+                    Liste.append(TextNode(split1[0], TextType.TEXT))
+                    split1.pop(0)
+                    split1 = ''.join(split1)
+                    Liste.append(TextNode(extracted[i][0], TextType.LINKS, url=extracted[i][1]))
+
+    return Liste
         
+
+
+
