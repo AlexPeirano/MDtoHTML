@@ -16,7 +16,7 @@ class BlockType(Enum):
     CODE = "code"
     QUOTE = "quote"
     UNORDERED_LIST = "unordered_list"
-    ORDERERD_LIST = "ordered_list"
+    ORDERERD_LIST = "ordererd_list"
 
 class TextNode:
     def __init__(self, text, text_type, url=None):
@@ -151,4 +151,64 @@ def block_to_block_type(block: str)->BlockType:
     quote = '>' # a space is not required after but is allowed
     unordered = '- '
     ordered = '. ' # must be preceded by a isdigit()
-    
+
+    def is_heading(block: str)->bool:
+        for i in headings:
+            if block.startswith(i):
+                return True
+            else:
+                continue
+        return False
+
+    def is_code(block: str)->bool:
+        if block.startswith(code) and block.endswith('```'):
+            return True
+        else:
+            return False
+
+
+    # split on newlines 
+    splitted = block.splitlines()
+
+    def is_quote(lines: list[str])->bool:
+        for line in lines:
+            if not line.startswith(quote):
+                return False
+        return True
+
+    def is_unordered(lines: list[str])->bool:
+        for line in lines:
+            if not line.startswith(unordered):
+                return False
+        return True
+
+    def is_ordered(lines: list[str])->bool:
+        nums = []
+        for line in lines:
+            split = line.split(ordered, maxsplit=1)
+            if len(split) == 1:
+                return False
+            elif not split[0].isdigit():
+                return False
+            nums.append(int(split[0]))
+        if not nums or nums[0] != 1:
+            return False
+        i = 0
+        for i in range(len(nums)-1):
+            if nums[i+1] != nums[i] + 1:
+                return False
+        return True
+
+    if is_heading(block):
+        return BlockType.HEADING
+    if is_code(block):
+        return BlockType.CODE
+    if is_quote(splitted):
+        return BlockType.QUOTE
+    if is_unordered(splitted):
+        return BlockType.UNORDERED_LIST
+    if is_ordered(splitted):
+        return BlockType.ORDERERD_LIST
+    else:
+        return BlockType.PARAGRAPH
+
