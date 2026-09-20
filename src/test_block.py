@@ -34,7 +34,7 @@ class TestBlockTypes(unittest.TestCase):
         )
     def test_ordered(self):
         block = "1. first point\n2. point"
-        self.assertEqual(block_to_block_type(block), BlockType.ORDERERD_LIST)
+        self.assertEqual(block_to_block_type(block), BlockType.ORDERED_LIST)
 
 if __name__ == "__main__":
     unittest.main()
