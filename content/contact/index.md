@@ -2,8 +2,8 @@
 
 [< Back Home](/)
 
-Give me a call anytime to chat about Tolkien!
+please don't
 
-`555-555-5555`
+`this is not my number`
 
 **"Váya márië."**

@@ -31,7 +31,7 @@ def copy_static_to_public(docs_path:str, static_path:str):
             copy_static_to_public(obj_dest, obj_path)
 
 if sys.argv:
-    basepath = sys.argv[0]
+    basepath = sys.argv[1]
 else:
     basepath = '/'
 
