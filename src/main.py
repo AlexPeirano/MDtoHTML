@@ -1,11 +1,11 @@
 import os
 import shutil
 from textnode import *
-import shutil
+from generate_page import *
 
-public_path = "/Users/alexpeirano/Documents/personal coding/StaticSiteGenerator/MDtoHTML/public"
-
-static_path = "/Users/alexpeirano/Documents/personal coding/StaticSiteGenerator/MDtoHTML/static"
+public_path = "./public" 
+static_path = "./static"
+content_path = "./content"
 
 def static_to_public(public_path:str, static_path: str):
 # first removes all of the files from the public dir
@@ -32,6 +32,12 @@ def copy_static_to_public(public_path:str, static_path:str):
 def main():
     static_to_public(public_path, static_path) 
     copy_static_to_public(public_path, static_path)
+    # gen page from content/index.md using template.html and write to public/index.html
+    template_path = "./template.html"
+
+    new_index_path = os.path.join(public_path, 'index.html')    
+    index_path = os.path.join(content_path, 'index.md')
+    generate_pages_recursive(content_path, template_path, public_path)  
 main()
 
     

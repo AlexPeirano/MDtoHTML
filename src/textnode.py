@@ -45,9 +45,9 @@ def text_node_to_html_node(text_node: TextNode)->LeafNode:
             return LeafNode('i', text_node.text)
         elif text_node.text_type == TextType.CODE:
             return LeafNode('code', text_node.text)
-        elif text_node.text_type == TextType.link:
+        elif text_node.text_type == TextType.LINKS:
             return LeafNode('a', text_node.text, {'href': text_node.url})
-        elif text_node.text_type == TextType.IMAGE:
+        elif text_node.text_type == TextType.IMAGES:
             return LeafNode('img',"", {'src': text_node.url, 'alt': text_node.text})
 
 ### This parts treats inline markdown
@@ -107,16 +107,17 @@ def split_nodes_links(old_nodes: list[TextNode])->list[TextNode]:
         if len(extracted) == 0:
             Liste.append(node)
         else:
-            i = 0
-            for i in range(len(extracted)):
-                split1 = node.text.split(f"![{extracted[i][0]}]({extracted[i][1]})", maxsplit=1)
+            remaining = node.text
+            for anchor, url in extracted:
+                split1 = remaining.split(f"[{anchor}]({url})", maxsplit=1)
                 if len(split1) == 1:
                     continue
-                else:
+                if split1[0]:
                     Liste.append(TextNode(split1[0], TextType.TEXT))
-                    split1.pop(0)
-                    split1 = ''.join(split1)
-                    Liste.append(TextNode(extracted[i][0], TextType.LINKS, url=extracted[i][1]))
+                Liste.append(TextNode(anchor, TextType.LINKS, url=url))
+                remaining = split1[1]
+            if remaining:
+                Liste.append(TextNode(remaining, TextType.TEXT))
 
     return Liste
         
